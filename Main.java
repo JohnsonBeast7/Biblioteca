@@ -1,3 +1,4 @@
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,7 +15,8 @@ public class Main {
                 2 - Listar Acervo
                 3 - Pesquisar Livro
                 4 - Remover Livro
-                5 - Contagem de Livros 
+                5 - Atualizar Livro
+                6 - Contagem de Livros 
                 0 - Sair
                 """;
         int opcao;
@@ -43,6 +45,11 @@ public class Main {
                     scan.nextLine();
                     break;
                 case 5:
+                    atualizarLivro();
+                    System.out.println("Pressione Enter para continuar");
+                    scan.nextLine();
+                    break;
+                case 6:
                     contagemLivros();
                     System.out.println("Pressione Enter para continuar");
                     scan.nextLine();
@@ -73,7 +80,6 @@ public class Main {
 
     private static void listarAcervo() {
         var acervo = biblioteca.pesquisar();
-        // List<Livro> acervo = biblioteca.pesquisar();
         imprimirLista(acervo);
     }
 
@@ -109,14 +115,16 @@ public class Main {
             return;
         }
         imprimirLista(acervo);
-        int remover;
-        remover = Input.scanInt("Digite o número do livro que deseja Remover: ", scan);
-        try {
-            biblioteca.remover(remover-1);
-            System.out.println("Livro removido com sucesso!");
-        } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
-        }
+        while (true) {
+            int remover = Input.scanInt("Digite o número do livro que deseja Remover: ", scan);
+            try {
+                biblioteca.remover(remover-1);
+                System.out.println("Livro removido com sucesso!");
+                break;
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }   
     }
 
     private static void atualizarLivro() {
@@ -124,6 +132,77 @@ public class Main {
         if (acervo.isEmpty()) {
             System.out.println("Não existem livros no acervo.");
             return;
+        } 
+        imprimirLista(acervo);
+        while (true) {
+            int indiceLivro = Input.scanInt("Digite o número do livro que deseja atualizar: ", scan);
+            int indiceTratado = indiceLivro -1;
+            try {
+                biblioteca.validarIndice(indiceTratado);
+                String tipoFormatado;
+                while (true) {
+                    String tipoMudanca = Input.scanString("Você deseja alterar o título, autor, ano ou páginas do livro? ", scan);
+                    tipoFormatado = removerAcentos(tipoMudanca);
+                    if (!tipoFormatado.equals("titulo") && !tipoFormatado.equals("autor") && !tipoFormatado.equals("ano") && !tipoFormatado.equals("paginas") ) {
+                        System.out.println("Opção inválida, tente novamente...");
+                    } else {
+                        break;
+                    }
+                }
+                switch (tipoFormatado) {
+                    case "titulo":
+                        while (true) {
+                            String titulo = Input.scanString("Digite o novo título: ", scan);
+                            try {
+                                biblioteca.atualizarTitulo(indiceTratado, titulo);
+                                System.out.println("Título atualizado com sucesso!");
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Erro: " + e.getMessage());
+                            }
+                        }
+                        break;
+                    case "autor":
+                        while (true) {
+                            String autor = Input.scanString("Digite o novo autor: ", scan);
+                            try {
+                                biblioteca.atualizarAutor(indiceTratado, autor);
+                                System.out.println("Autor atualizado com sucesso!");
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Erro: " + e.getMessage());
+                            }
+                        }
+                        break;
+                    case "ano":
+                        while (true) {
+                            int ano = Input.scanInt("Digite o novo ano de publicação: ", scan);
+                            try {
+                                biblioteca.atualizarAnoPublicacao(indiceTratado, ano);
+                                System.out.println("Ano de publicação atualizado com sucesso!");
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Erro: " + e.getMessage());
+                            }
+                        }
+                        break;
+                    case "paginas":
+                        while (true) {
+                            int paginas = Input.scanInt("Digite o novo número de páginas: ", scan);
+                            try {
+                                biblioteca.atualizarNumeroPaginas(indiceTratado, paginas);
+                                System.out.println("Número de páginas atualizado com sucesso!");
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Erro: " + e.getMessage());
+                            }
+                        }
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+            break;
         }
     }
 
@@ -138,6 +217,13 @@ public class Main {
         } else {
             System.out.println("Existem " + acervo.size() + " livros cadastrados.");
         }
-      }
+    }
+
+    public static String removerAcentos(String texto) {
+    return Normalizer
+        .normalize(texto, Normalizer.Form.NFD)
+        .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+        .toLowerCase();
+    }
 
 }

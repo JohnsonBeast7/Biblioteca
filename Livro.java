@@ -1,8 +1,8 @@
 public class Livro {
-    private String titulo;
-    private String autor;
-    private int anoPublicacao;
-    private int numeroPaginas;
+    protected String titulo;
+    protected String autor;
+    protected int anoPublicacao;
+    protected int numeroPaginas;
 
     public Livro(){
 
