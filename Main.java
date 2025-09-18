@@ -17,6 +17,8 @@ public class Main {
                 4 - Remover Livro
                 5 - Atualizar Livro
                 6 - Contagem de Livros 
+                7 - Pesquisar por Período
+                8 - Visualizar Livro mais Antigo e mais Novo
                 0 - Sair
                 """;
         int opcao;
@@ -51,6 +53,16 @@ public class Main {
                     break;
                 case 6:
                     contagemLivros();
+                    System.out.println("Pressione Enter para continuar");
+                    scan.nextLine();
+                    break;
+                case 7:
+                    pesquisaPeriodoTempo();
+                    System.out.println("Pressione Enter para continuar");
+                    scan.nextLine();
+                    break;
+                case 8:
+                    livrosAntigoNovo();
                     System.out.println("Pressione Enter para continuar");
                     scan.nextLine();
                     break;
@@ -101,12 +113,23 @@ public class Main {
         if (acervo == null || acervo.isEmpty())
             System.out.println("Nenhum Livro Encontrado");
         else {
-            System.out.println("Livros Encrontrados");
+            System.out.println("Livros Encontrados");
             for (int i = 0; i < acervo.size(); i++) {
                 System.out.println("Livro " + (i + 1) + ": " + acervo.get(i));
             }
         }
     }
+
+    private static void imprimirLivrosNovoVelho(List<Livro> acervo) {
+        if (acervo.size() == 1) {
+            System.out.println("Existe somente um livro cadastrado.");
+            return;
+        }
+        else {
+            System.out.println("Livro Mais Antigo:" + acervo.get(0));
+            System.out.println("Livro Mais Novo:" + acervo.get(1));
+            }
+        }
 
     private static void removerLivro() {
         List<Livro> acervo = biblioteca.pesquisar();
@@ -219,11 +242,44 @@ public class Main {
         }
     }
 
+    private static void pesquisaPeriodoTempo() {
+        List<Livro> acervo = biblioteca.pesquisar();
+        if (acervo.isEmpty()) {
+            System.out.println("Não existem livros no acervo.");
+            return;
+        } 
+        while (true) {
+            int ano1Pesquisa = Input.scanInt("Digite o primeiro ano do período: ", scan);
+            int ano2Pesquisa = Input.scanInt("Digite o segundo ano do período: ", scan);
+            try {
+                List<Livro> livrosNoPeriodo = biblioteca.pesquisarPeriodo(ano1Pesquisa, ano2Pesquisa);
+                imprimirLista(livrosNoPeriodo);
+                break;
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
+
+    }
+
+    public static void livrosAntigoNovo() {
+        List<Livro> acervo = biblioteca.pesquisar();
+        if (acervo.isEmpty()) {
+            System.out.println("Não existem livros no acervo.");
+            return;
+        } else if (acervo.size() == 1) {
+            System.out.println("Existe somente um livro cadastrado.");
+            return;
+        }
+        List<Livro> listaLivrosAntigoNovo = biblioteca.retornarLivrosAntigoNovo();
+        imprimirLivrosNovoVelho(listaLivrosAntigoNovo);
+        
+    }
+
     public static String removerAcentos(String texto) {
     return Normalizer
         .normalize(texto, Normalizer.Form.NFD)
         .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
         .toLowerCase();
     }
-
 }

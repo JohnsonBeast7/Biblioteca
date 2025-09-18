@@ -10,33 +10,42 @@ public class Biblioteca {
 
     private void validarTitulo(String titulo) throws Exception {
         if (titulo == null || titulo.trim().isEmpty()) {
-            throw new Exception("Título não pode ser em branco");
+            throw new Exception("Título não pode ser em branco.");
         }
     }
 
     private void validarAutor(String autor) throws Exception {
         if (autor == null || autor.trim().isEmpty()) {
-            throw new Exception("Autor não pode ser em branco");
+            throw new Exception("Autor não pode ser em branco.");
         }
     }
 
     private void validarAnoPublicacao(int ano) throws Exception {
         int anoAtual = LocalDate.now().getYear();
         if (ano < 1900 || ano > anoAtual) {
-            throw new Exception("Ano de publicação deve estar entre 1900 e o ano atual");
+            throw new Exception("Ano de publicação deve estar entre 1900 e o ano atual.");
+        }
+    }
+
+    private void validarAnoPublicacao(int... anos) throws Exception {
+        int anoAtual = LocalDate.now().getYear();
+        for (int ano : anos) {
+            if (ano < 1900 || ano > anoAtual) {
+                throw new Exception("Ano inválido: " + ano + ". O ano de publicação deve estar entre 1900 e o ano atual");
+            }        
         }
     }
 
     private void validarNumeroPaginas(int paginas) throws Exception {
         if (paginas <= 0) {
-            throw new Exception("Número de páginas deve ser maior que zero");
+            throw new Exception("Número de páginas deve ser maior que zero.");
         }
     }
 
 
     public Livro adicionar(Livro livro) throws Exception{
         if (livro == null)
-            throw new Exception("Livro não pode ser nulo");
+            throw new Exception("Livro não pode ser nulo.");
 
         validarTitulo(livro.getTitulo());
         validarAutor(livro.getAutor());
@@ -91,7 +100,7 @@ public class Biblioteca {
     public void atualizarAutor(int indice, String autor)  throws Exception {
         validarIndice(indice);
         validarTitulo(autor);
-        acervo.get(indice).setTitulo(autor);
+        acervo.get(indice).setAutor(autor);
     }
 
     public void atualizarAnoPublicacao(int indice, int anoPublicacao)  throws Exception {
@@ -104,6 +113,48 @@ public class Biblioteca {
         validarIndice(indice);
         validarNumeroPaginas(numeroPaginas);
         acervo.get(indice).setNumeroPaginas(numeroPaginas);
+    }
+
+    public List<Livro> pesquisarPeriodo(int ano1, int ano2) throws Exception {
+        validarAnoPublicacao(ano1, ano2);
+        if (ano1 == ano2) {
+            throw new Exception("Os anos não podem ser idênticos.");
+        }     
+        
+        int anoInicial = Math.min(ano1, ano2);
+        int anoFinal = Math.max(ano1, ano2);
+
+        List<Livro> livrosPeriodo = new ArrayList<>();
+        for (Livro livro : acervo) {
+            if (livro.getAnoPublicacao() >= anoInicial && livro.getAnoPublicacao() <= anoFinal) {
+                livrosPeriodo.add(livro);
+            }
+        }
+        return livrosPeriodo; 
+    }
+
+    public List<Livro> retornarLivrosAntigoNovo()  {
+        int menorAno = LocalDate.now().getYear();
+        int maiorAno = 1900;
+        Livro livroMaisAntigo = null;
+        Livro livroMaisNovo = null;
+        for (Livro livro : acervo ) {
+            if (livro.getAnoPublicacao() < menorAno) {
+                menorAno = livro.getAnoPublicacao();
+                livroMaisAntigo = livro;
+            }
+            if (livro.getAnoPublicacao() > maiorAno) {
+                maiorAno = livro.getAnoPublicacao();
+                livroMaisNovo = livro;
+            }
+        }
+        List<Livro> livrosVelhoNovo = new ArrayList<>();
+        livrosVelhoNovo.add(livroMaisAntigo);
+        livrosVelhoNovo.add(livroMaisNovo);
+        return livrosVelhoNovo;
+
+    
+
     }
 
 }
