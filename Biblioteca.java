@@ -42,6 +42,14 @@ public class Biblioteca {
         }
     }
 
+    private void validarDuplicidade(String titulo, String autor, int ano) throws Exception {
+        for (Livro livro : acervo) {
+            if (livro.getTitulo().equalsIgnoreCase(titulo) && livro.getAutor().equalsIgnoreCase(autor) && livro.getAnoPublicacao() == ano) {
+                throw new Exception("Esse livro já existe, tente novamente...");
+            }
+        }
+    }
+
 
     public Livro adicionar(Livro livro) throws Exception{
         if (livro == null)
@@ -51,6 +59,7 @@ public class Biblioteca {
         validarAutor(livro.getAutor());
         validarAnoPublicacao(livro.getAnoPublicacao());
         validarNumeroPaginas(livro.getNumeroPaginas());
+        validarDuplicidade(livro.getTitulo(), livro.getAutor(), livro.getAnoPublicacao());
 
         livro.setTitulo(livro.getTitulo().trim());      
         livro.setAutor(livro.getAutor().trim());
@@ -94,18 +103,30 @@ public class Biblioteca {
     public void atualizarTitulo(int indice, String titulo)  throws Exception {
         validarIndice(indice);
         validarTitulo(titulo);
+        if (titulo.equalsIgnoreCase(acervo.get(indice).getTitulo())) {
+            throw new Exception("O título digitado é exatamente igual o atual. Tente novamente...");
+        }
+        validarDuplicidade(titulo, acervo.get(indice).getAutor(), acervo.get(indice).getAnoPublicacao());
         acervo.get(indice).setTitulo(titulo);
     }
 
     public void atualizarAutor(int indice, String autor)  throws Exception {
         validarIndice(indice);
-        validarTitulo(autor);
+        validarAutor(autor);
+        if (autor.equalsIgnoreCase(acervo.get(indice).getAutor())) {
+            throw new Exception("O autor digitado é exatamente igual o atual. Tente novamente...");
+        }
+        validarDuplicidade(acervo.get(indice).getTitulo(), autor, acervo.get(indice).getAnoPublicacao());
         acervo.get(indice).setAutor(autor);
     }
 
     public void atualizarAnoPublicacao(int indice, int anoPublicacao)  throws Exception {
         validarIndice(indice);
         validarAnoPublicacao(anoPublicacao);
+        if (anoPublicacao == (acervo.get(indice).getAnoPublicacao())) {
+            throw new Exception("O ano digitado é exatamente igual o atual. Tente novamente...");
+        }
+        validarDuplicidade(acervo.get(indice).getTitulo(), acervo.get(indice).getAutor(), anoPublicacao);
         acervo.get(indice).setAnoPublicacao(anoPublicacao);
     }
 
