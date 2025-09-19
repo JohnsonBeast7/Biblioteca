@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Biblioteca {
     private List<Livro> acervo;
+
     public Biblioteca() {
         this.acervo = new ArrayList<>();
     }
@@ -31,8 +32,9 @@ public class Biblioteca {
         int anoAtual = LocalDate.now().getYear();
         for (int ano : anos) {
             if (ano < 1900 || ano > anoAtual) {
-                throw new Exception("Ano inválido: " + ano + ". O ano de publicação deve estar entre 1900 e o ano atual");
-            }        
+                throw new Exception(
+                        "Ano inválido: " + ano + ". O ano de publicação deve estar entre 1900 e o ano atual");
+            }
         }
     }
 
@@ -44,14 +46,14 @@ public class Biblioteca {
 
     private void validarDuplicidade(String titulo, String autor, int ano) throws Exception {
         for (Livro livro : acervo) {
-            if (livro.getTitulo().equalsIgnoreCase(titulo) && livro.getAutor().equalsIgnoreCase(autor) && livro.getAnoPublicacao() == ano) {
+            if (livro.getTitulo().equalsIgnoreCase(titulo) && livro.getAutor().equalsIgnoreCase(autor)
+                    && livro.getAnoPublicacao() == ano) {
                 throw new Exception("Esse livro já existe, tente novamente...");
             }
         }
     }
 
-
-    public Livro adicionar(Livro livro) throws Exception{
+    public Livro adicionar(Livro livro) throws Exception {
         if (livro == null)
             throw new Exception("Livro não pode ser nulo.");
 
@@ -61,9 +63,9 @@ public class Biblioteca {
         validarNumeroPaginas(livro.getNumeroPaginas());
         validarDuplicidade(livro.getTitulo(), livro.getAutor(), livro.getAnoPublicacao());
 
-        livro.setTitulo(livro.getTitulo().trim());      
+        livro.setTitulo(livro.getTitulo().trim());
         livro.setAutor(livro.getAutor().trim());
-        
+
         acervo.add(livro);
         return livro;
     }
@@ -72,15 +74,15 @@ public class Biblioteca {
         return acervo;
     }
 
-    public List<Livro> pesquisar(String titulo){
+    public List<Livro> pesquisar(String titulo) {
         return pesquisar(titulo, null);
     }
 
     public List<Livro> pesquisar(String titulo, String autor) {
         List<Livro> livrosEncontrados = new ArrayList<>();
         for (Livro livro : acervo) {
-            if (livro.getTitulo().toLowerCase().contains(titulo.toLowerCase())){
-                if (autor == null || 
+            if (livro.getTitulo().toLowerCase().contains(titulo.toLowerCase())) {
+                if (autor == null ||
                         livro.getAutor().toLowerCase().contains(autor.toLowerCase()))
                     livrosEncontrados.add(livro);
             }
@@ -91,7 +93,7 @@ public class Biblioteca {
     public void validarIndice(int indice) throws Exception {
         if (indice < 0 || indice >= acervo.size()) {
             throw new Exception("Índice inválido!");
-        }  
+        }
     }
 
     public void remover(int indice) throws Exception {
@@ -100,7 +102,7 @@ public class Biblioteca {
         acervo.remove(indice);
     }
 
-    public void atualizarTitulo(int indice, String titulo)  throws Exception {
+    public void atualizarTitulo(int indice, String titulo) throws Exception {
         validarIndice(indice);
         validarTitulo(titulo);
         if (titulo.equalsIgnoreCase(acervo.get(indice).getTitulo())) {
@@ -110,7 +112,7 @@ public class Biblioteca {
         acervo.get(indice).setTitulo(titulo);
     }
 
-    public void atualizarAutor(int indice, String autor)  throws Exception {
+    public void atualizarAutor(int indice, String autor) throws Exception {
         validarIndice(indice);
         validarAutor(autor);
         if (autor.equalsIgnoreCase(acervo.get(indice).getAutor())) {
@@ -120,7 +122,7 @@ public class Biblioteca {
         acervo.get(indice).setAutor(autor);
     }
 
-    public void atualizarAnoPublicacao(int indice, int anoPublicacao)  throws Exception {
+    public void atualizarAnoPublicacao(int indice, int anoPublicacao) throws Exception {
         validarIndice(indice);
         validarAnoPublicacao(anoPublicacao);
         if (anoPublicacao == (acervo.get(indice).getAnoPublicacao())) {
@@ -130,7 +132,7 @@ public class Biblioteca {
         acervo.get(indice).setAnoPublicacao(anoPublicacao);
     }
 
-    public void atualizarNumeroPaginas(int indice, int numeroPaginas)  throws Exception {
+    public void atualizarNumeroPaginas(int indice, int numeroPaginas) throws Exception {
         validarIndice(indice);
         validarNumeroPaginas(numeroPaginas);
         acervo.get(indice).setNumeroPaginas(numeroPaginas);
@@ -140,8 +142,8 @@ public class Biblioteca {
         validarAnoPublicacao(ano1, ano2);
         if (ano1 == ano2) {
             throw new Exception("Os anos não podem ser idênticos.");
-        }     
-        
+        }
+
         int anoInicial = Math.min(ano1, ano2);
         int anoFinal = Math.max(ano1, ano2);
 
@@ -151,35 +153,42 @@ public class Biblioteca {
                 livrosPeriodo.add(livro);
             }
         }
-        return livrosPeriodo; 
+        return livrosPeriodo;
     }
 
-    public List<List<Livro>> retornarLivrosAntigoNovo() throws Exception  {
+    public List<List<Livro>> retornarLivrosAntigoNovo() throws Exception {
         if (acervo.size() == 1) {
             throw new Exception("Existe somente um livro cadastrado");
         }
         int menorAno = LocalDate.now().getYear();
         int maiorAno = 1900;
-        List<Livro> livrosMaisAntigos = new  ArrayList<>();
-        List<Livro> livrosMaisNovos = new  ArrayList<>();
-        for (Livro livro : acervo ) { 
+        List<Livro> livrosMaisAntigos = new ArrayList<>();
+        List<Livro> livrosMaisNovos = new ArrayList<>();
+        for (Livro livro : acervo) {
             if (livro.getAnoPublicacao() <= menorAno) {
                 menorAno = livro.getAnoPublicacao();
-                livrosMaisAntigos.add(livro);
             }
             if (livro.getAnoPublicacao() >= maiorAno) {
                 maiorAno = livro.getAnoPublicacao();
-                livrosMaisNovos.add(livro);
             }
         }
         if (menorAno == maiorAno) {
             throw new Exception("Todos os livros tem o mesmo ano de publicação.");
+        } else {
+            for (Livro livro : acervo) {
+                if (livro.getAnoPublicacao() == menorAno) {
+                    livrosMaisAntigos.add(livro);
+                }
+                if (livro.getAnoPublicacao() == maiorAno) {
+                    livrosMaisNovos.add(livro);
+                }
+            }
         }
-        List<List<Livro>> livrosVelhoNovo = new  ArrayList<>();
+        List<List<Livro>> livrosVelhoNovo = new ArrayList<>();
         livrosVelhoNovo.add(livrosMaisAntigos);
         livrosVelhoNovo.add(livrosMaisNovos);
         return livrosVelhoNovo;
-        
+
     }
 
 }

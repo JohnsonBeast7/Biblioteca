@@ -1,4 +1,5 @@
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -120,13 +121,30 @@ public class Main {
         }
     }
 
-    private static void imprimirLivrosNovoVelho(List<Livro> acervo) {
-        List<List<Livro>> listaLivros = biblioteca.retornarLivrosAntigoNovo();
-        else {
-            System.out.println("Livro Mais Antigo:" + acervo.get(0));
-            System.out.println("Livro Mais Novo:" + acervo.get(1));
+    private static void imprimirLivrosNovoVelho(List<List<Livro>> listasLivros) {
+        if (listasLivros.get(0).size() == 1) {
+            System.out.println("=== Livro mais antigo ===");
+            System.out.println("Livro: " + listasLivros.get(0).get(0));
+        } else {
+            int i = 1;
+            System.out.println("=== Livros mais antigos ==="); 
+            for (Livro  livro : listasLivros.get(0)) {
+                System.out.println("Livro " + i + ": " + livro);
+                i++;
             }
         }
+        if (listasLivros.get(1).size() == 1) {
+            System.out.println("=== Livro mais novo ===");
+            System.out.println("Livro: " + listasLivros.get(1).get(0));
+        } else {
+            int i = 1;
+            System.out.println("=== Livros mais novos ===");
+            for (Livro livro : listasLivros.get(1)) {
+                System.out.println("Livro " + i + ": " + livro);
+                i++;
+            }
+        }
+    }
 
     private static void removerLivro() {
         List<Livro> acervo = biblioteca.pesquisar();
@@ -261,10 +279,18 @@ public class Main {
 
     public static void livrosAntigoNovo() {
         List<Livro> acervo = biblioteca.pesquisar();
+        List<List<Livro>> listaLivrosAntigoNovo = new ArrayList<>();
         if (acervo.isEmpty()) {
             System.out.println("Não existem livros no acervo.");
             return;
-        List<List<Livro>> listaLivrosAntigoNovo = biblioteca.retornarLivrosAntigoNovo();
+        }
+        try {
+            listaLivrosAntigoNovo = biblioteca.retornarLivrosAntigoNovo();
+        } catch (Exception e) {
+            System.out.println("Erro: " + e.getMessage());
+            return;
+        }
+        
         imprimirLivrosNovoVelho(listaLivrosAntigoNovo);
         
     }
