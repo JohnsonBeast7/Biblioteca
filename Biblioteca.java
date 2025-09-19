@@ -154,28 +154,32 @@ public class Biblioteca {
         return livrosPeriodo; 
     }
 
-    public List<Livro> retornarLivrosAntigoNovo()  {
+    public List<List<Livro>> retornarLivrosAntigoNovo() throws Exception  {
+        if (acervo.size() == 1) {
+            throw new Exception("Existe somente um livro cadastrado");
+        }
         int menorAno = LocalDate.now().getYear();
         int maiorAno = 1900;
-        Livro livroMaisAntigo = null;
-        Livro livroMaisNovo = null;
-        for (Livro livro : acervo ) {
-            if (livro.getAnoPublicacao() < menorAno) {
+        List<Livro> livrosMaisAntigos = new  ArrayList<>();
+        List<Livro> livrosMaisNovos = new  ArrayList<>();
+        for (Livro livro : acervo ) { 
+            if (livro.getAnoPublicacao() <= menorAno) {
                 menorAno = livro.getAnoPublicacao();
-                livroMaisAntigo = livro;
+                livrosMaisAntigos.add(livro);
             }
-            if (livro.getAnoPublicacao() > maiorAno) {
+            if (livro.getAnoPublicacao() >= maiorAno) {
                 maiorAno = livro.getAnoPublicacao();
-                livroMaisNovo = livro;
+                livrosMaisNovos.add(livro);
             }
         }
-        List<Livro> livrosVelhoNovo = new ArrayList<>();
-        livrosVelhoNovo.add(livroMaisAntigo);
-        livrosVelhoNovo.add(livroMaisNovo);
+        if (menorAno == maiorAno) {
+            throw new Exception("Todos os livros tem o mesmo ano de publicação.");
+        }
+        List<List<Livro>> livrosVelhoNovo = new  ArrayList<>();
+        livrosVelhoNovo.add(livrosMaisAntigos);
+        livrosVelhoNovo.add(livrosMaisNovos);
         return livrosVelhoNovo;
-
-    
-
+        
     }
 
 }

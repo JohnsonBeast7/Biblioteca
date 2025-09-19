@@ -121,10 +121,7 @@ public class Main {
     }
 
     private static void imprimirLivrosNovoVelho(List<Livro> acervo) {
-        if (acervo.size() == 1) {
-            System.out.println("Existe somente um livro cadastrado.");
-            return;
-        }
+        List<List<Livro>> listaLivros = biblioteca.retornarLivrosAntigoNovo();
         else {
             System.out.println("Livro Mais Antigo:" + acervo.get(0));
             System.out.println("Livro Mais Novo:" + acervo.get(1));
@@ -267,11 +264,7 @@ public class Main {
         if (acervo.isEmpty()) {
             System.out.println("Não existem livros no acervo.");
             return;
-        } else if (acervo.size() == 1) {
-            System.out.println("Existe somente um livro cadastrado.");
-            return;
-        }
-        List<Livro> listaLivrosAntigoNovo = biblioteca.retornarLivrosAntigoNovo();
+        List<List<Livro>> listaLivrosAntigoNovo = biblioteca.retornarLivrosAntigoNovo();
         imprimirLivrosNovoVelho(listaLivrosAntigoNovo);
         
     }
