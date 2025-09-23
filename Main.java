@@ -78,11 +78,27 @@ public class Main {
     }
 
     private static void cadastrarLivro() {
+        String formato = "";
+        while (true) {
+            formato = Input.scanString("Você deseja cadastrar um livro físico, ou digital? ", scan);
+            try {
+                biblioteca.validarFormato(formato);
+                break;
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
+            }
+        }
         String titulo = Input.scanString("Digite o Título: ", scan);
         String autor = Input.scanString("Digite o Autor: ", scan);
         int anoPublicacao = Input.scanInt("Digite o ano de publicação: ", scan);
         int numeroPaginas = Input.scanInt("Digite o número de páginas: ", scan);
-        Livro novoLivro = new Livro(titulo, autor, anoPublicacao, numeroPaginas);
+        Livro novoLivro = null;
+        formato = removerAcentos(formato);
+        if (formato.equalsIgnoreCase("digital")) {
+            novoLivro = new LivroDigital(titulo, autor, anoPublicacao, numeroPaginas);
+        } else if (formato.equalsIgnoreCase("fisico")) {
+            novoLivro = new LivroFisico(titulo, autor, anoPublicacao, numeroPaginas);
+        }
         try {
             biblioteca.adicionar(novoLivro);
             System.out.println("Livro adicionado com sucesso.");

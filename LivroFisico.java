@@ -1,11 +1,11 @@
-public final class LivroDigital extends Livro {
+public final class LivroFisico extends Livro {
 
-    public LivroDigital(String titulo, String autor, int anoPublicacao, int numeroPaginas) {
+    public LivroFisico(String titulo, String autor, int anoPublicacao, int numeroPaginas) {
         super(titulo, autor, anoPublicacao, numeroPaginas);
     }
 
     public String getFormato() {
-        return "Livro Digital";
+        return "Livro Físico";
     }
 
     @Override

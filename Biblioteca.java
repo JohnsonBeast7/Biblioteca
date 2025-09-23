@@ -4,9 +4,16 @@ import java.util.List;
 
 public class Biblioteca {
     private List<Livro> acervo;
+    public static final int ANO_PUBLICACAO_MINIMO = 1900;
 
     public Biblioteca() {
         this.acervo = new ArrayList<>();
+    }
+
+    public void validarFormato(String formato) throws Exception {
+        if (!formato.equalsIgnoreCase("fisico") && !formato.equalsIgnoreCase("digital")) {
+            throw new Exception("Formato de livro inválido, tente novamente...");
+        }
     }
 
     private void validarTitulo(String titulo) throws Exception {
@@ -23,7 +30,7 @@ public class Biblioteca {
 
     private void validarAnoPublicacao(int ano) throws Exception {
         int anoAtual = LocalDate.now().getYear();
-        if (ano < 1900 || ano > anoAtual) {
+        if (ano < ANO_PUBLICACAO_MINIMO || ano > anoAtual) {
             throw new Exception("Ano de publicação deve estar entre 1900 e o ano atual.");
         }
     }
@@ -31,7 +38,7 @@ public class Biblioteca {
     private void validarAnoPublicacao(int... anos) throws Exception {
         int anoAtual = LocalDate.now().getYear();
         for (int ano : anos) {
-            if (ano < 1900 || ano > anoAtual) {
+            if (ano < ANO_PUBLICACAO_MINIMO || ano > anoAtual) {
                 throw new Exception(
                         "Ano inválido: " + ano + ". O ano de publicação deve estar entre 1900 e o ano atual");
             }
@@ -134,6 +141,10 @@ public class Biblioteca {
 
     public void atualizarNumeroPaginas(int indice, int numeroPaginas) throws Exception {
         validarIndice(indice);
+        Livro livro = acervo.get(indice);
+        if (livro.getFormato().equalsIgnoreCase("Livro Digital")) {
+            throw new Exception("Impossível alterar as páginas de um livro digital.");
+        }
         validarNumeroPaginas(numeroPaginas);
         acervo.get(indice).setNumeroPaginas(numeroPaginas);
     }
